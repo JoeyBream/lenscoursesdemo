@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Varsity Hackathon 2026 | Oxford vs Cambridge</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --oxford-blue: #002147;
+            --oxford-glow: #1a4a7a;
+            --cambridge-green: #00594c;
+            --cambridge-light: #a3c1ad;
+            --gold: #d4af37;
+            --gold-bright: #ffd700;
+            --white: #ffffff;
+            --black: #0a0a0a;
+            --gray: #888;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Outfit', sans-serif;
+            background: var(--black);
+            color: var(--white);
+        }
+
+        /* Split background */
+        .split-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .split-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--oxford-blue) 0%, #001428 100%);
+            clip-path: polygon(0 0, 100% 0, 85% 100%, 0 100%);
+        }
+
+        .split-bg::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(225deg, var(--cambridge-green) 0%, #002a23 100%);
+            clip-path: polygon(15% 0, 100% 0, 100% 100%, 0 100%);
+        }
+
+        /* Animated diagonal line */
+        .diagonal-clash {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            width: 4px;
+            height: 141.42%;
+            background: linear-gradient(180deg,
+                transparent 0%,
+                var(--gold) 20%,
+                var(--gold-bright) 50%,
+                var(--gold) 80%,
+                transparent 100%
+            );
+            transform-origin: top center;
+            transform: rotate(8deg) translateX(-50%);
+            z-index: 1;
+            box-shadow:
+                0 0 30px var(--gold),
+                0 0 60px var(--gold),
+                0 0 100px rgba(212, 175, 55, 0.5);
+            animation: clashPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes clashPulse {
+            0%, 100% {
+                opacity: 0.8;
+                box-shadow:
+                    0 0 30px var(--gold),
+                    0 0 60px var(--gold),
+                    0 0 100px rgba(212, 175, 55, 0.5);
+            }
+            50% {
+                opacity: 1;
+                box-shadow:
+                    0 0 50px var(--gold-bright),
+                    0 0 100px var(--gold),
+                    0 0 150px rgba(212, 175, 55, 0.7);
+            }
+        }
+
+        /* Particle effects */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            border-radius: 50%;
+            animation: particleFloat 8s infinite;
+        }
+
+        .particle.oxford {
+            background: rgba(0, 100, 200, 0.6);
+            box-shadow: 0 0 10px rgba(0, 100, 200, 0.8);
+        }
+
+        .particle.cambridge {
+            background: rgba(0, 200, 150, 0.6);
+            box-shadow: 0 0 10px rgba(0, 200, 150, 0.8);
+        }
+
+        @keyframes particleFloat {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) translateX(50px); opacity: 0; }
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 1.5rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: fadeDown 0.8s ease-out;
+        }
+
+        @keyframes fadeDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo-text {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1.5rem;
+            letter-spacing: 0.15em;
+            background: linear-gradient(90deg, var(--white) 0%, var(--gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gold);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--white);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .register-btn {
+            padding: 0.75rem 1.75rem;
+            background: transparent;
+            border: 2px solid var(--gold);
+            color: var(--gold) !important;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .register-btn::after {
+            display: none !important;
+        }
+
+        .register-btn:hover {
+            background: var(--gold);
+            color: var(--black) !important;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
+        }
+
+        /* Main content */
+        main {
+            position: relative;
+            z-index: 10;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        /* University crests */
+        .crests {
+            display: flex;
+            align-items: center;
+            gap: 4rem;
+            margin-bottom: 2rem;
+            animation: fadeUp 0.8s ease-out 0.2s both;
+        }
+
+        .crest {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2rem;
+            position: relative;
+        }
+
+        .crest::before {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            border-radius: 50%;
+            padding: 3px;
+            background: linear-gradient(135deg, var(--gold), transparent, var(--gold));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+        }
+
+        .crest.oxford {
+            background: var(--oxford-blue);
+            box-shadow: 0 0 40px rgba(0, 33, 71, 0.8);
+        }
+
+        .crest.cambridge {
+            background: var(--cambridge-green);
+            box-shadow: 0 0 40px rgba(0, 89, 76, 0.8);
+        }
+
+        .vs-text {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 3rem;
+            color: var(--gold);
+            text-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+            animation: vsPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes vsPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Headline */
+        .headline {
+            margin-bottom: 1.5rem;
+            animation: fadeUp 0.8s ease-out 0.4s both;
+        }
+
+        .headline h1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(4rem, 12vw, 10rem);
+            line-height: 0.9;
+            letter-spacing: 0.02em;
+            text-transform: uppercase;
+        }
+
+        .headline .varsity {
+            display: block;
+            background: linear-gradient(90deg,
+                var(--oxford-glow) 0%,
+                var(--white) 30%,
+                var(--white) 70%,
+                var(--cambridge-light) 100%
+            );
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .headline .hackathon {
+            display: block;
+            color: var(--gold);
+            text-shadow: 0 0 60px rgba(212, 175, 55, 0.5);
+            font-size: 0.6em;
+            letter-spacing: 0.3em;
+        }
+
+        /* Event details */
+        .event-details {
+            display: flex;
+            gap: 3rem;
+            margin-bottom: 2rem;
+            animation: fadeUp 0.8s ease-out 0.6s both;
+        }
+
+        .detail {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .detail-label {
+            font-family: 'Space Mono', monospace;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--gold);
+        }
+
+        .detail-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+
+        /* CTAs */
+        .cta-group {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+            animation: fadeUp 0.8s ease-out 0.8s both;
+        }
+
+        .btn {
+            padding: 1.1rem 2.5rem;
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            text-decoration: none;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--gold) 0%, var(--gold-bright) 50%, var(--gold) 100%);
+            background-size: 200% 200%;
+            color: var(--black);
+            border: none;
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.4);
+            animation: goldShimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes goldShimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 10px 60px rgba(212, 175, 55, 0.6);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--white);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--white);
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-4px);
+        }
+
+        /* Countdown */
+        .countdown {
+            display: flex;
+            gap: 2rem;
+            animation: fadeUp 0.8s ease-out 1s both;
+        }
+
+        .countdown-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .countdown-value {
+            font-family: 'Space Mono', monospace;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--white);
+            line-height: 1;
+            min-width: 70px;
+            padding: 0.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .countdown-value::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+        }
+
+        .countdown-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: var(--gray);
+            margin-top: 0.5rem;
+        }
+
+        /* Footer */
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            padding: 1rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.75rem;
+            color: var(--gray);
+        }
+
+        .sponsors {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .sponsors span {
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-size: 0.65rem;
+        }
+
+        .sponsor-logos {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .sponsor-logo {
+            width: 24px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Glitch effect on hover */
+        .headline h1:hover .varsity {
+            animation: glitch 0.3s ease;
+        }
+
+        @keyframes glitch {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-3px); }
+            40% { transform: translateX(3px); }
+            60% { transform: translateX(-2px); }
+            80% { transform: translateX(2px); }
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            nav {
+                padding: 1rem 2rem;
+            }
+
+            .nav-links a:not(.register-btn) {
+                display: none;
+            }
+
+            .crests {
+                gap: 2rem;
+            }
+
+            .crest {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+
+            .vs-text {
+                font-size: 2rem;
+            }
+
+            .event-details {
+                gap: 1.5rem;
+            }
+
+            .countdown {
+                gap: 1rem;
+            }
+
+            .countdown-value {
+                font-size: 1.75rem;
+                min-width: 55px;
+            }
+
+            footer {
+                flex-direction: column;
+                gap: 0.5rem;
+                padding: 1rem;
+            }
+        }
+
+        /* Scan line effect */
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 50;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.03) 0px,
+                rgba(0, 0, 0, 0.03) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+        }
+    </style>
+</head>
+<body>
+    <div class="split-bg"></div>
+    <div class="diagonal-clash"></div>
+    <div class="particles" id="particles"></div>
+    <div class="scanlines"></div>
+
+    <nav>
+        <div class="logo">
+            <span class="logo-text">Varsity Hack</span>
+        </div>
+        <div class="nav-links">
+            <a href="#about">About</a>
+            <a href="#schedule">Schedule</a>
+            <a href="#prizes">Prizes</a>
+            <a href="#faq">FAQ</a>
+            <a href="#register" class="register-btn">Register</a>
+        </div>
+    </nav>
+
+    <main>
+        <div class="crests">
+            <div class="crest oxford">OX</div>
+            <span class="vs-text">VS</span>
+            <div class="crest cambridge">CAM</div>
+        </div>
+
+        <div class="headline">
+            <h1>
+                <span class="varsity">Varsity</span>
+                <span class="hackathon">Hackathon</span>
+            </h1>
+        </div>
+
+        <div class="event-details">
+            <div class="detail">
+                <span class="detail-label">Location</span>
+                <span class="detail-value">London, UK</span>
+            </div>
+            <div class="detail">
+                <span class="detail-label">Date</span>
+                <span class="detail-value">March 15-16, 2026</span>
+            </div>
+            <div class="detail">
+                <span class="detail-label">Prize Pool</span>
+                <span class="detail-value">£50,000</span>
+            </div>
+        </div>
+
+        <div class="cta-group">
+            <a href="#register" class="btn btn-primary">Register Now</a>
+            <a href="#about" class="btn btn-secondary">Learn More</a>
+        </div>
+
+        <div class="countdown">
+            <div class="countdown-item">
+                <div class="countdown-value" id="days">47</div>
+                <div class="countdown-label">Days</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-value" id="hours">12</div>
+                <div class="countdown-label">Hours</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-value" id="minutes">34</div>
+                <div class="countdown-label">Minutes</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-value" id="seconds">56</div>
+                <div class="countdown-label">Seconds</div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="sponsors">
+            <span>Sponsored by</span>
+            <div class="sponsor-logos">
+                <div class="sponsor-logo"></div>
+                <div class="sponsor-logo"></div>
+                <div class="sponsor-logo"></div>
+                <div class="sponsor-logo"></div>
+            </div>
+        </div>
+        <span>© 2026 Varsity Hackathon. All rights reserved.</span>
+    </footer>
+
+    <script>
+        // Generate particles
+        const particlesContainer = document.getElementById('particles');
+        const particleCount = 40;
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = `particle ${i % 2 === 0 ? 'oxford' : 'cambridge'}`;
+            particle.style.left = `${Math.random() * 100}%`;
+            particle.style.top = `${100 + Math.random() * 20}%`;
+            particle.style.animationDelay = `${Math.random() * 8}s`;
+            particle.style.animationDuration = `${6 + Math.random() * 4}s`;
+            particlesContainer.appendChild(particle);
+        }
+
+        // Countdown timer
+        const targetDate = new Date('March 15, 2026 09:00:00').getTime();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = targetDate - now;
+
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById('days').textContent = String(days).padStart(2, '0');
+            document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+            document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+            document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+        }
+
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+
+        // Mouse parallax effect
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth - 0.5) * 2;
+            const y = (e.clientY / window.innerHeight - 0.5) * 2;
+
+            const diagonal = document.querySelector('.diagonal-clash');
+            if (diagonal) {
+                diagonal.style.transform = `rotate(${8 + x * 2}deg) translateX(-50%)`;
+            }
+        });
+    </script>
+</body>
+</html>
