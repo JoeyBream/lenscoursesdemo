@@ -17,8 +17,8 @@
         :root {
             --oxford-blue: #002147;
             --oxford-glow: #1a4a7a;
-            --cambridge-green: #00594c;
-            --cambridge-light: #a3c1ad;
+            --cambridge-blue: #8EE8D8;
+            --cambridge-dark: #0d3d3d;
             --gold: #d4af37;
             --gold-bright: #ffd700;
             --white: #ffffff;
@@ -63,7 +63,7 @@
             right: 0;
             width: 50%;
             height: 100%;
-            background: linear-gradient(225deg, var(--cambridge-green) 0%, #002a23 100%);
+            background: linear-gradient(225deg, var(--cambridge-dark) 0%, #091f1f 100%);
             clip-path: polygon(15% 0, 100% 0, 100% 100%, 0 100%);
         }
 
@@ -133,8 +133,8 @@
         }
 
         .particle.cambridge {
-            background: rgba(0, 200, 150, 0.6);
-            box-shadow: 0 0 10px rgba(0, 200, 150, 0.8);
+            background: rgba(142, 232, 216, 0.6);
+            box-shadow: 0 0 10px rgba(142, 232, 216, 0.8);
         }
 
         @keyframes particleFloat {
@@ -287,8 +287,9 @@
         }
 
         .crest.cambridge {
-            background: var(--cambridge-green);
-            box-shadow: 0 0 40px rgba(0, 89, 76, 0.8);
+            background: linear-gradient(135deg, var(--cambridge-dark) 0%, #1a5555 100%);
+            border: 2px solid var(--cambridge-blue);
+            box-shadow: 0 0 40px rgba(142, 232, 216, 0.4);
         }
 
         .vs-text {
@@ -324,7 +325,7 @@
                 var(--oxford-glow) 0%,
                 var(--white) 30%,
                 var(--white) 70%,
-                var(--cambridge-light) 100%
+                var(--cambridge-blue) 100%
             );
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -596,10 +597,10 @@
             <span class="logo-text">Varsity Hack</span>
         </div>
         <div class="nav-links">
+            <a href="index.html">Lens Demo</a>
             <a href="#about">About</a>
             <a href="#schedule">Schedule</a>
             <a href="#prizes">Prizes</a>
-            <a href="#faq">FAQ</a>
             <a href="#register" class="register-btn">Register</a>
         </div>
     </nav>
