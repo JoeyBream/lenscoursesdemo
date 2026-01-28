@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Varsity Hackathon 2026 | Oxford vs Cambridge</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --oxford: #002147;
+            --cambridge: #8EE8D8;
+            --black: #000000;
+            --white: #ffffff;
+            --gray: #666;
+            --accent: #FF3C00;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Inter', sans-serif;
+            background: var(--black);
+            color: var(--white);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Noise texture overlay */
+        .noise {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+        }
+
+        /* Main layout */
+        .container {
+            height: 100%;
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            padding: 1rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 0.75rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+
+        .nav-pills {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .nav-pills a {
+            padding: 0.5rem 1rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            text-decoration: none;
+            color: var(--white);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 100px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-pills a:hover {
+            background: var(--white);
+            color: var(--black);
+        }
+
+        .nav-pills a.accent {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .nav-pills a.accent:hover {
+            background: #ff5a2b;
+            border-color: #ff5a2b;
+            color: var(--white);
+        }
+
+        /* Hero */
+        .hero {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Giant VS background */
+        .vs-bg {
+            position: absolute;
+            font-family: 'Anton', sans-serif;
+            font-size: clamp(40vh, 50vw, 70vh);
+            font-weight: 400;
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.05);
+            line-height: 0.8;
+            user-select: none;
+            pointer-events: none;
+            animation: vsBgPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes vsBgPulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.02); }
+        }
+
+        /* University badges */
+        .universities {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            animation: fadeUp 0.6s ease-out 0.1s both;
+        }
+
+        .uni-badge {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .uni-circle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Anton', sans-serif;
+            font-size: 1rem;
+            letter-spacing: 0.05em;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .uni-circle:hover {
+            transform: scale(1.1);
+        }
+
+        .uni-circle.oxford {
+            background: var(--oxford);
+            box-shadow: 0 0 30px rgba(0, 33, 71, 0.8);
+        }
+
+        .uni-circle.cambridge {
+            background: linear-gradient(135deg, #0d3d3d, #1a5555);
+            border: 2px solid var(--cambridge);
+            box-shadow: 0 0 30px rgba(142, 232, 216, 0.3);
+        }
+
+        .uni-name {
+            font-size: 0.6rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--gray);
+        }
+
+        .vs-divider {
+            font-family: 'Anton', sans-serif;
+            font-size: 1.5rem;
+            color: var(--accent);
+            animation: vsPop 0.8s ease-out 0.3s both;
+        }
+
+        @keyframes vsPop {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Main title */
+        .title {
+            animation: fadeUp 0.6s ease-out 0.2s both;
+        }
+
+        .title h1 {
+            font-family: 'Anton', sans-serif;
+            font-size: clamp(3.5rem, 18vw, 12rem);
+            line-height: 0.85;
+            text-transform: uppercase;
+            letter-spacing: -0.02em;
+        }
+
+        .title .line1 {
+            display: block;
+            color: var(--white);
+        }
+
+        .title .line2 {
+            display: block;
+            color: var(--accent);
+            position: relative;
+        }
+
+        .title .line2::after {
+            content: 'HACKATHON';
+            position: absolute;
+            top: 0;
+            left: 0;
+            color: transparent;
+            -webkit-text-stroke: 1px rgba(255, 60, 0, 0.3);
+            transform: translate(4px, 4px);
+            z-index: -1;
+        }
+
+        /* Event info strip */
+        .info-strip {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            padding: 1rem 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeUp 0.6s ease-out 0.3s both;
+            flex-wrap: wrap;
+        }
+
+        .info-item {
+            text-align: center;
+        }
+
+        .info-label {
+            font-size: 0.6rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--gray);
+            margin-bottom: 0.25rem;
+        }
+
+        .info-value {
+            font-size: 0.9rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+        }
+
+        .info-value.highlight {
+            color: var(--accent);
+        }
+
+        /* CTA */
+        .cta-section {
+            margin-top: 2rem;
+            animation: fadeUp 0.6s ease-out 0.4s both;
+        }
+
+        .btn-main {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem 2.5rem;
+            background: var(--accent);
+            color: var(--white);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-main::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-main:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 40px rgba(255, 60, 0, 0.4);
+        }
+
+        .btn-main:hover::before {
+            left: 100%;
+        }
+
+        .btn-main svg {
+            width: 18px;
+            height: 18px;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-main:hover svg {
+            transform: translateX(4px);
+        }
+
+        /* Footer */
+        footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.65rem;
+            color: var(--gray);
+            animation: fadeIn 0.6s ease-out 0.5s both;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .footer-links a {
+            color: var(--gray);
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--white);
+        }
+
+        /* Countdown ticker */
+        .countdown-ticker {
+            position: absolute;
+            bottom: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 0.25rem;
+            font-family: 'Inter', monospace;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            color: var(--gray);
+            animation: fadeIn 0.6s ease-out 0.6s both;
+        }
+
+        .countdown-ticker span {
+            padding: 0.4rem 0.6rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .countdown-ticker .number {
+            color: var(--white);
+            min-width: 2rem;
+            text-align: center;
+        }
+
+        /* Animated corner accents */
+        .corner {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .corner::before,
+        .corner::after {
+            content: '';
+            position: absolute;
+            background: var(--accent);
+        }
+
+        .corner-tl {
+            top: 1rem;
+            left: 1rem;
+        }
+        .corner-tl::before { width: 20px; height: 2px; top: 0; left: 0; }
+        .corner-tl::after { width: 2px; height: 20px; top: 0; left: 0; }
+
+        .corner-br {
+            bottom: 1rem;
+            right: 1rem;
+        }
+        .corner-br::before { width: 20px; height: 2px; bottom: 0; right: 0; }
+        .corner-br::after { width: 2px; height: 20px; bottom: 0; right: 0; }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 600px) {
+            .container {
+                padding: 0.75rem;
+            }
+
+            header {
+                flex-direction: column;
+                gap: 0.75rem;
+                padding-bottom: 0.75rem;
+            }
+
+            .nav-pills {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .nav-pills a {
+                padding: 0.4rem 0.75rem;
+                font-size: 0.6rem;
+            }
+
+            .universities {
+                gap: 1rem;
+            }
+
+            .uni-circle {
+                width: 40px;
+                height: 40px;
+                font-size: 0.85rem;
+            }
+
+            .info-strip {
+                gap: 1.25rem;
+            }
+
+            .info-value {
+                font-size: 0.8rem;
+            }
+
+            .btn-main {
+                padding: 0.9rem 2rem;
+                font-size: 0.75rem;
+            }
+
+            .countdown-ticker {
+                bottom: 10%;
+                font-size: 0.6rem;
+            }
+
+            .countdown-ticker span {
+                padding: 0.3rem 0.4rem;
+            }
+
+            footer {
+                justify-content: center;
+                text-align: center;
+            }
+
+            .corner {
+                display: none;
+            }
+        }
+
+        /* Hover glow on hero */
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255, 60, 0, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .hero:hover::before {
+            opacity: 1;
+        }
+
+        /* Selection color */
+        ::selection {
+            background: var(--accent);
+            color: var(--white);
+        }
+    </style>
+</head>
+<body>
+    <div class="noise"></div>
+    <div class="corner corner-tl"></div>
+    <div class="corner corner-br"></div>
+
+    <div class="container">
+        <header>
+            <div class="logo">Varsity Hack '26</div>
+            <nav class="nav-pills">
+                <a href="index.html">Lens</a>
+                <a href="varsity.html">V1</a>
+                <a href="#" class="accent">Register</a>
+            </nav>
+        </header>
+
+        <main class="hero">
+            <div class="vs-bg">VS</div>
+
+            <div class="universities">
+                <div class="uni-badge">
+                    <div class="uni-circle oxford">OX</div>
+                    <span class="uni-name">Oxford</span>
+                </div>
+                <span class="vs-divider">×</span>
+                <div class="uni-badge">
+                    <div class="uni-circle cambridge">CAM</div>
+                    <span class="uni-name">Cambridge</span>
+                </div>
+            </div>
+
+            <div class="title">
+                <h1>
+                    <span class="line1">Varsity</span>
+                    <span class="line2">Hackathon</span>
+                </h1>
+            </div>
+
+            <div class="info-strip">
+                <div class="info-item">
+                    <div class="info-label">Location</div>
+                    <div class="info-value">London</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Date</div>
+                    <div class="info-value">Mar 15-16</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Prizes</div>
+                    <div class="info-value highlight">£50K</div>
+                </div>
+            </div>
+
+            <div class="cta-section">
+                <a href="#register" class="btn-main">
+                    Apply Now
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </a>
+            </div>
+
+            <div class="countdown-ticker">
+                <span class="number" id="days">47</span>
+                <span>D</span>
+                <span class="number" id="hours">12</span>
+                <span>H</span>
+                <span class="number" id="mins">34</span>
+                <span>M</span>
+                <span class="number" id="secs">56</span>
+                <span>S</span>
+            </div>
+        </main>
+
+        <footer>
+            <span>© 2026 Varsity Hackathon</span>
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">FAQ</a>
+                <a href="#">Contact</a>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Countdown
+        const target = new Date('March 15, 2026 09:00:00').getTime();
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const diff = target - now;
+
+            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('days').textContent = String(d).padStart(2, '0');
+            document.getElementById('hours').textContent = String(h).padStart(2, '0');
+            document.getElementById('mins').textContent = String(m).padStart(2, '0');
+            document.getElementById('secs').textContent = String(s).padStart(2, '0');
+        }
+
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+
+        // Mouse glow follow
+        const hero = document.querySelector('.hero');
+        hero.addEventListener('mousemove', (e) => {
+            const rect = hero.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            hero.style.setProperty('--glow-x', `${x}px`);
+            hero.style.setProperty('--glow-y', `${y}px`);
+            if (hero.style.getPropertyValue('--glow-x')) {
+                hero.querySelector('::before')?.style.setProperty('left', `${x - 150}px`);
+                hero.querySelector('::before')?.style.setProperty('top', `${y - 150}px`);
+            }
+        });
+    </script>
+</body>
+</html>
